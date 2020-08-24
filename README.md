@@ -2,10 +2,20 @@
 
 ## How to run locally
 
+Copy the .env.sample to .env
+
+```
+docker-compose up --build
+```
+
+## How to run locally manually
+
+Copy the .env.sample to .env and source its variables (dotenv)
+
 Database:
 
 ```
-docker-compose up
+docker-compose up tpdp_postgres
 ```
 
 Core:
@@ -25,4 +35,11 @@ Site:
 cd site
 npm install
 npm start
+```
+
+## How to deploy
+
+```
+eval $(docker-machine env social-scaleway)
+docker-compose -f docker-compose.prod.yml up --build
 ```

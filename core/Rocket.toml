@@ -1,0 +1,3 @@
+[global]
+address = "0.0.0.0"
+secret_key = "secretKeyJustForDevelopmentB3VRq9qA2y4lc+Mg="

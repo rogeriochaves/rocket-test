@@ -1,3 +1,4 @@
+#![allow(unused_imports)]
 #![feature(proc_macro_hygiene, decl_macro)]
 
 #[macro_use]

@@ -10,8 +10,14 @@ services:
     restart: always
     network_mode: host
     env_file: .env
+    depends_on:
+      - tpdp_postgres
   tpdp_postgres:
     image: postgres:9.6
-    ports:
-      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    network_mode: host
     env_file: .env
+
+volumes:
+  postgres_data:

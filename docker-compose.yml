@@ -1,11 +1,30 @@
 version: "3.4"
 services:
+  tpdp_site:
+    build: site
+    restart: always
+    env_file: .env
+    ports:
+      - "${PORT_SITE}:${PORT_SITE}"
+    command: "bash -c 'PORT=$PORT_SITE npm run start'"
+  tpdp_core:
+    build: core
+    restart: always
+    env_file: .env
+    depends_on:
+      - tpdp_postgres
+    ports:
+      - "${PORT_CORE}:${PORT_CORE}"
+    command: "bash -c 'diesel database setup && ROCKET_PORT=$PORT_CORE cargo watch -w src -x run'"
+    environment:
+      DATABASE_URL: "postgres://postgres:password@tpdp_postgres:5432/tpdp"
   tpdp_postgres:
     image: postgres:9.6
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    env_file: .env
     environment:
       POSTGRES_PASSWORD: password
 

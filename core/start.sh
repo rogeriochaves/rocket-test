@@ -2,4 +2,4 @@ set -e
 
 diesel migration run
 
-ROCKET_PORT=$PORT tpdp-core
+ROCKET_PORT=$PORT_CORE tpdp-core
