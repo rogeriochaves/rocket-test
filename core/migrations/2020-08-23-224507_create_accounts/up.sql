@@ -1,0 +1,5 @@
+CREATE TABLE accounts (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL
+)

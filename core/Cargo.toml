@@ -1,0 +1,19 @@
+[package]
+name = "tpdp-core"
+version = "0.1.0"
+authors = ["Rogerio Chaves <rogeriocfj@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rocket = "0.4.5"
+rocket_contrib = "0.4.5"
+serde = "1.0.115"
+serde_derive = "1.0.115"
+diesel = { version = "1.4.5", features = ["postgres", "chrono"] }
+dotenv = "0.15.0"
+r2d2-diesel = "1.0.0"
+r2d2 = "0.8.9"
+cookie = "0.14.2"
+chrono = { version = "0.4.15", features = ["serde", "rustc-serialize"] }

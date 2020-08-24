@@ -1,0 +1,13 @@
+version: "3.4"
+services:
+  tpdp_postgres:
+    image: postgres:9.6
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+
+volumes:
+  postgres_data:
