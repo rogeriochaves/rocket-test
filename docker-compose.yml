@@ -7,6 +7,9 @@ services:
     ports:
       - "${PORT_SITE}:${PORT_SITE}"
     command: "bash -c 'PORT=$PORT_SITE npm run start'"
+    volumes:
+      - ./site/:/app
+      - /app/node_modules
   tpdp_core:
     build: core
     restart: always
@@ -18,6 +21,9 @@ services:
     command: "bash -c 'diesel database setup && ROCKET_PORT=$PORT_CORE cargo watch -w src -x run'"
     environment:
       DATABASE_URL: "postgres://postgres:password@tpdp_postgres:5432/tpdp"
+    volumes:
+      - ./core/:/app
+      - /app/target
   tpdp_postgres:
     image: postgres:9.6
     volumes:

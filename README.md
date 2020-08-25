@@ -10,6 +10,8 @@ docker-compose up --build
 
 ## How to run locally manually
 
+It's more work but you need this setup so IDE can help you better and use less resources because of running outside docker
+
 Copy the .env.sample to .env and source its variables (dotenv)
 
 Database:
@@ -41,5 +43,5 @@ npm start
 
 ```
 eval $(docker-machine env social-scaleway)
-docker-compose -f docker-compose.prod.yml up --build
+docker-compose -f docker-compose.prod.yml up -d --build
 ```
