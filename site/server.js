@@ -2,16 +2,25 @@ const path = require("path");
 const args = require("yargs").argv;
 const webpack = require("webpack");
 const express = require("express");
+const { createProxyMiddleware } = require("http-proxy-middleware");
 const fs = require("fs");
 const { JSDOM } = require("jsdom");
 const { Script } = require("vm");
-const PORT = args.port || process.env.PORT || 3000;
+const PORT = args.port || process.env.PORT || 4000;
 
 const app = express();
 app.set("view engine", "ejs");
 app.set("views", "./src");
 app.use(express.static("build"));
 app.use(express.static("static"));
+app.use(
+  "/api",
+  createProxyMiddleware({
+    target: process.env.CORE_URL || "http://localhost:4001",
+    changeOrigin: true,
+    pathRewrite: { "^/api": "" },
+  })
+);
 
 let webpackMiddleware;
 if (process.env.NODE_ENV !== "production") {

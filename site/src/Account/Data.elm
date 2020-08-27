@@ -11,7 +11,7 @@ createAccount : NewAccountForm -> Cmd Msg
 createAccount form =
     let
         url =
-            "http://localhost:4001/account/create"
+            "/api/account/create"
 
         returnMsg =
             RemoteData.fromResult >> ResponseNewAccount

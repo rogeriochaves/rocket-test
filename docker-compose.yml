@@ -7,6 +7,8 @@ services:
     ports:
       - "${PORT_SITE}:${PORT_SITE}"
     command: "bash -c 'PORT=$PORT_SITE npm run start'"
+    environment:
+      CORE_URL: "http://tpdp_core:4001"
     volumes:
       - ./site/:/app
       - /app/node_modules

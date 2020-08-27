@@ -5,12 +5,12 @@
 Copy the .env.sample to .env
 
 ```
-docker-compose up --build
+docker-compose up --build --renew-anon-volumes
 ```
 
 ## How to run locally manually
 
-It's more work but you need this setup so IDE can help you better and use less resources because of running outside docker
+It's more work but use less resources because of running outside docker
 
 Copy the .env.sample to .env and source its variables (dotenv)
 
@@ -23,12 +23,13 @@ docker-compose up tpdp_postgres
 Core:
 
 ```
+cargo install cargo-watch
 cd core
 cargo build
 export DATABASE_URL=postgres://postgres:password@localhost/tpdp
 diesel setup
 diesel migration run
-cargo run
+cargo watch -w src -x run
 ```
 
 Site:
@@ -37,6 +38,12 @@ Site:
 cd site
 npm install
 npm start
+```
+
+After first setup next time you can simply run
+
+```
+./start-dev.sh
 ```
 
 ## How to deploy

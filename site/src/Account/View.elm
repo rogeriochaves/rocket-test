@@ -97,9 +97,9 @@ submitArea model =
                 [ submitButton ]
 
             Loading ->
-                [ Input.button (Styles.button ++ [ alignRight, padding 10, width (px 150) ])
+                [ Input.button (Styles.button ++ [ alignRight, padding 10, width (px 140) ])
                     { onPress = Nothing
-                    , label = image [ width (px 30) ] { src = "/loading.svg", description = "loading" }
+                    , label = image [ width (px 40) ] { src = "/loading.svg", description = "loading" }
                     }
                 ]
 
