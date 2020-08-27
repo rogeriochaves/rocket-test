@@ -1,5 +1,6 @@
 module View exposing (renderRoute, view)
 
+import Account.View
 import Browser
 import Cats.View
 import Counter.View
@@ -18,7 +19,8 @@ view model =
     { title = "site"
     , body =
         [ Element.layout [] <|
-            el [ width (px 800), centerX ] (renderRoute model)
+            el [ width (px 800), centerX ]
+                (renderRoute model)
         ]
     }
 
@@ -27,12 +29,12 @@ renderRoute : Model -> Element Types.Msg
 renderRoute model =
     case model.router.page of
         Home ->
-            column
-                [ spacing 5 ]
+            column [ spacing 5 ]
                 [ el ([ heading 1 ] ++ Styles.title) (text "Welcome")
                 , row [ spacing 5 ]
                     [ link ([ padding 5 ] ++ Styles.button) { url = toPath CatsPage, label = text "Go to Cats" }
                     , link ([ padding 5 ] ++ Styles.button) { url = toPath CounterPage, label = text "Go to Counter" }
+                    , link ([ padding 5 ] ++ Styles.button) { url = toPath NewAccountPage, label = text "Create Account" }
                     ]
                 ]
 
@@ -44,3 +46,6 @@ renderRoute model =
 
         CounterPage ->
             Element.map MsgForCounter (Counter.View.view model.counter)
+
+        NewAccountPage ->
+            Element.map MsgForAccount (Account.View.create model.account)

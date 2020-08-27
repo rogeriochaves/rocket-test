@@ -1,4 +1,4 @@
-module Styles exposing (button, title)
+module Styles exposing (button, errorText, title)
 
 import Element exposing (..)
 import Element.Background as Background
@@ -15,4 +15,10 @@ title =
 button : List (Attr decorative msg)
 button =
     [ Background.color (rgb 0.9 0.9 0.9)
+    ]
+
+
+errorText : List (Attr decorative msg)
+errorText =
+    [ Font.color (rgb 0.9 0 0)
     ]

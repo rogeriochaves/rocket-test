@@ -8,7 +8,7 @@ import Url exposing (Url)
 
 type alias Model =
     { page : Page
-    , key : Key
+    , key : Maybe Key
     }
 
 

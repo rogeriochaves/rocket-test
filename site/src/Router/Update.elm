@@ -1,4 +1,4 @@
-module Router.Update exposing (init, update)
+module Router.Update exposing (init, initNoKey, update)
 
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation exposing (Key, load, pushUrl)
@@ -15,7 +15,16 @@ init : Url -> Key -> Return Msg Model
 init url key =
     return
         { page = Maybe.withDefault NotFound <| parse routes url
-        , key = key
+        , key = Just key
+        }
+        Cmd.none
+
+
+initNoKey : Url -> Return Msg Model
+initNoKey url =
+    return
+        { page = Maybe.withDefault NotFound <| parse routes url
+        , key = Nothing
         }
         Cmd.none
 
@@ -37,12 +46,22 @@ updateRouter msg model =
             return { model | page = Maybe.withDefault NotFound <| parse routes url } Cmd.none
 
         OnUrlRequest urlRequest ->
-            case urlRequest of
-                Internal url ->
-                    ( model, pushUrl model.key <| Url.toString url )
+            case model.key of
+                Just key ->
+                    case urlRequest of
+                        Internal url ->
+                            ( model, pushUrl key <| Url.toString url )
 
-                External url ->
-                    ( model, load url )
+                        External url ->
+                            ( model, load url )
+
+                Nothing ->
+                    return model Cmd.none
 
         Go page ->
-            return model (pushUrl model.key <| toPath page)
+            case model.key of
+                Just key ->
+                    return model (pushUrl key <| toPath page)
+
+                Nothing ->
+                    return model Cmd.none

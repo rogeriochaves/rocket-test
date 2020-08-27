@@ -11,6 +11,7 @@ const app = express();
 app.set("view engine", "ejs");
 app.set("views", "./src");
 app.use(express.static("build"));
+app.use(express.static("static"));
 
 let webpackMiddleware;
 if (process.env.NODE_ENV !== "production") {
