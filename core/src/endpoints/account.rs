@@ -3,6 +3,8 @@ extern crate rocket;
 extern crate rocket_contrib;
 
 use crate::models::user::User;
+use crate::schema::accounts::dsl as account;
+use crate::schema::user_accounts::dsl as user_account;
 use crate::schema::users::dsl as user;
 use crate::utils::pg_pool::DbConn;
 use bcrypt::{hash, DEFAULT_COST};
@@ -33,18 +35,33 @@ pub fn account_create(
         user::email.eq(&params.email),
         user::encrypted_password.eq(encrypted_password),
     );
-    let rows_inserted: Vec<i32> = diesel::insert_into(user::users)
+    let user_id: i32 = diesel::insert_into(user::users)
         .values(&new_user)
         .returning(user::id)
-        .get_results(&*conn)
+        .get_result(&*conn)
         .expect("inserts new user");
 
-    let id_inserted = rows_inserted.get(0).expect("get the id of inserted user");
+    let new_account = (account::name.eq(&params.product_name),);
+    let account_id: i32 = diesel::insert_into(account::accounts)
+        .values(&new_account)
+        .returning(account::id)
+        .get_result(&*conn)
+        .expect("inserts new account");
+
+    let new_user_account = (
+        user_account::user_id.eq(user_id),
+        user_account::account_id.eq(account_id),
+        user_account::role.eq("admin"),
+    );
+    diesel::insert_into(user_account::user_accounts)
+        .values(&new_user_account)
+        .execute(&*conn)
+        .expect("inserts new user account");
 
     status::Created(
         String::from(""),
         Some(Json(AccountCreateResponse {
-            id: *id_inserted,
+            id: user_id,
             email: String::from("foo"),
         })),
     )
@@ -85,9 +102,21 @@ mod tests {
         assert_eq!(result.exists, false);
     }
 
+    fn cleanup(conn: &PgConnection) {
+        let users = user::users
+            .filter(user::email.eq("foo@bar.baz"))
+            .load::<User>(conn)
+            .expect("deletes test user");
+        for user in users.iter() {
+            user.full_delete(conn).expect("deletes existing user");
+        }
+    }
+
     #[test]
     fn creates_new_accounts() {
         let conn = pg_pool::establish_connection();
+        cleanup(&conn);
+
         let client = Client::new(rocket_server()).expect("valid rocket instance");
         let req = client
             .post("/account/create")
@@ -102,10 +131,6 @@ mod tests {
             )
             .header(ContentType::JSON);
 
-        diesel::delete(user::users.filter(user::email.eq("foo@bar.baz")))
-            .execute(&conn)
-            .expect("deletes test user");
-
         let mut response = req.dispatch();
         assert_eq!(response.status(), Status::Created);
         let result: AccountCreateResponse =
@@ -113,11 +138,16 @@ mod tests {
                 .expect("reads the json response");
 
         let user: User = user::users
-            .filter(user::id.eq(result.id))
-            .first(&conn)
+            .find(result.id)
+            .get_result(&conn)
             .expect("finds created user");
         assert_eq!(user.email, "foo@bar.baz");
         assert_ne!(user.encrypted_password, "hunter2");
+
+        let user_accounts = user.user_accounts(&conn).expect("find accounts");
+        let user_account = user_accounts.get(0).expect("has an account");
+        assert_eq!(user_account.account.name, "foo");
+        assert_eq!(user_account.role, "admin");
 
         let req = client.get("/account/email_check?email=foo@bar.baz");
         let mut response = req.dispatch();
