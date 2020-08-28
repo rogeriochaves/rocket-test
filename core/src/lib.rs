@@ -4,6 +4,7 @@
 extern crate diesel;
 #[macro_use]
 extern crate serde_derive;
+extern crate serde_json;
 
 #[macro_use]
 extern crate rocket;
@@ -16,8 +17,11 @@ pub mod schema;
 pub mod utils;
 
 pub fn start_server() {
+    rocket_server().launch();
+}
+
+pub fn rocket_server() -> rocket::Rocket {
     rocket::ignite()
         .manage(utils::pg_pool::init_pool())
-        .mount("/", routes![endpoints::account::get_users,])
-        .launch();
+        .mount("/", routes![endpoints::account::account_create,])
 }
