@@ -35,8 +35,7 @@ decodeNewAccountResponse =
 newAccountEncoder : NewAccountForm -> Encode.Value
 newAccountEncoder form =
     Encode.object
-        [ ( "productName", Encode.string form.productName )
+        [ ( "product_name", Encode.string form.productName )
         , ( "email", Encode.string form.email )
         , ( "password", Encode.string form.password )
-        , ( "passwordConfirmation", Encode.string form.passwordConfirmation )
         ]
